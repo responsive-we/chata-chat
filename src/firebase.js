@@ -1,7 +1,7 @@
 import { initializeApp } from "firebase/app";
 import { getAuth,createUserWithEmailAndPassword,GoogleAuthProvider,signInWithPopup,signInWithEmailAndPassword,updateProfile } from "firebase/auth";
-
-
+import { ref, uploadBytesResumable, getDownloadURL,getStorage } from "firebase/storage";
+import { doc, setDoc,getFirestore } from "firebase/firestore";
 const firebaseConfig = {
   apiKey: import.meta.env.VITE_API_KEY,
   authDomain: import.meta.env.VITE_AUTH_DOMAIN,
@@ -15,4 +15,6 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const googleProvider= new GoogleAuthProvider();
-export {auth,createUserWithEmailAndPassword,googleProvider,signInWithPopup,signInWithEmailAndPassword,updateProfile};
+const storage = getStorage();
+const db = getFirestore();
+export {auth,createUserWithEmailAndPassword,googleProvider,signInWithPopup,signInWithEmailAndPassword,updateProfile,ref, uploadBytesResumable, getDownloadURL,doc,setDoc,db,storage};
