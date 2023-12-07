@@ -1,5 +1,5 @@
 import { initializeApp } from "firebase/app";
-import { getAuth,createUserWithEmailAndPassword,GoogleAuthProvider,signInWithPopup,signInWithEmailAndPassword,updateProfile } from "firebase/auth";
+import { getAuth,createUserWithEmailAndPassword,GoogleAuthProvider,signInWithPopup,signInWithEmailAndPassword,updateProfile,onAuthStateChanged } from "firebase/auth";
 import { ref, uploadBytesResumable, getDownloadURL,getStorage } from "firebase/storage";
 import { doc, setDoc,getFirestore } from "firebase/firestore";
 const firebaseConfig = {
@@ -17,4 +17,4 @@ const auth = getAuth(app);
 const googleProvider= new GoogleAuthProvider();
 const storage = getStorage();
 const db = getFirestore();
-export {auth,createUserWithEmailAndPassword,googleProvider,signInWithPopup,signInWithEmailAndPassword,updateProfile,ref, uploadBytesResumable, getDownloadURL,doc,setDoc,db,storage};
+export {auth,createUserWithEmailAndPassword,googleProvider,signInWithPopup,signInWithEmailAndPassword,updateProfile,ref, uploadBytesResumable, getDownloadURL,doc,setDoc,db,storage,onAuthStateChanged};

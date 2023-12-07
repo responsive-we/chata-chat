@@ -36,50 +36,43 @@ const Auth = () => {
   const [isSignUp, setIsSignUp] = useState(false);
   const [avatar, setAvatar] = useState("");
   const [avatarUrl, setAvatarUrl] = useState("");
-  //Using validdation with formik and yup
+  const styleClass = isSignUp ? "cont s--signup" : "cont";
 
+//Creating acount using email and password
   const signUpWithEmailAndPassword = async (
     auth,
     { email, password, name },
     avatarUrl
   ) => {
     try {
+      //creat a user
       const res = await createUserWithEmailAndPassword(auth, email, password);
-      const date = new Date().getTime();
-      if (avatar) {
-        console.log("storage:", storage, "displayName:", name);
-        const storageRef = ref(storage, `${name + date}`);
-        await uploadBytesResumable(storageRef, avatar).then(() => {
-          getDownloadURL(storageRef).then(async (downloadURL) => {
-            try {
-              //Update profile
-              await updateProfile(res.user, {
-                name,
-                photoURL: downloadURL,
-              });
-            } catch (err) {
-              console.error(err);
-              setErr(true);
-            }
-          });
+
+      const storageRef = ref(storage, res.user.uid);
+      await uploadBytesResumable(storageRef, avatar).then(() => {
+        getDownloadURL(storageRef).then(async (downloadURL) => {
+          try {
+            //Update profile with the name and avatar(photoURL)
+            await updateProfile(res.user, {
+              name,
+              photoURL: downloadURL,
+            });
+            //create user on firestore
+            await setDoc(doc(db, "users", res.user.uid), {
+              uid: res.user.uid,
+              name,
+              email,
+              photoURL: res.user.photoURL,
+              friends: [],
+              groups: [],
+            });
+            navigate("/");
+          } catch (err) {
+            console.error(err);
+            setErr(true);
+          }
         });
-      } else {
-        try {
-          //create user on firestore
-          await setDoc(doc(db, "users", res.user.uid), {
-            uid: res.user.uid,
-            name,
-            email,
-            photoURL: res.user.photoURL,
-            friends: [],
-            groups: [],
-          });
-        } catch (error) {
-          console.error(error);
-          setErr(true);
-        }
-      }
-      navigate("/");
+      });
     } catch (error) {
       console.error(error);
       setErr(true);
@@ -88,14 +81,40 @@ const Auth = () => {
   // Sign in with email and password
   const signInUser = async (auth, { email, password }) => {
     try {
-      console.log("signInUser called with values:", email, password);
       const res = await signInWithEmailAndPassword(auth, email, password);
       console.log(res.user);
     } catch (error) {
       setErr(true);
     }
   };
-  // Defingin validation schema using yup
+
+  // Function to continue with google
+  const continueWithGoogle = async () => {
+    auth.useDeviceLanguage();
+    const res = await signInWithPopup(auth, googleProvider);
+    //create user on firestore
+    await setDoc(doc(db, "users", res.user.uid), {
+      uid: res.user.uid,
+      name: res.user.displayName,
+      email: res.user.email,
+      photoURL: res.user.photoURL,
+      friends: [],
+      groups: [],
+    });
+    navigate("/");
+  };
+
+  // Function to handle avatar
+  const handleAvatar = (e) => {
+    setAvatar(e.target.files[0]);
+    setAvatarUrl(URL.createObjectURL(e.target.files[0]));
+  };
+
+  const toggleSignUp = () => {
+    setIsSignUp(!isSignUp);
+  };
+  
+  // Defining validation schema using yup (for signup form)
   const signUpSchema = Yup.object().shape({
     name: Yup.string().required("This field is required"),
     email: Yup.string()
@@ -114,6 +133,8 @@ const Auth = () => {
         "Password should contain at least one special character"
       ),
   });
+
+  // Defining validation schema using yup (for signin form)
   const signInSchema = Yup.object().shape({
     email: Yup.string()
       .email("Please enter a valid email")
@@ -132,6 +153,7 @@ const Auth = () => {
       ),
   });
 
+  //Using formik with validation schema
   const formik = useFormik({
     initialValues: {
       name,
@@ -140,40 +162,17 @@ const Auth = () => {
     },
     validationSchema: isSignUp ? signUpSchema : signInSchema,
     onSubmit: async (values, { resetForm }) => {
-      console.log("Form submitted with values:", values);
       if (isSignUp) {
         await signUpWithEmailAndPassword(auth, values);
+        resetForm()
       } else {
-        console.log(values);
         await signInUser(auth, values);
+        resetForm()
       }
     },
   });
-  // Creating User with Email and Password
-  // Function to handle avatar
-  const handleAvatar = (e) => {
-    setAvatar(e.target.files[0]);
-    setAvatarUrl(URL.createObjectURL(e.target.files[0]));
-  };
-  const toggleSignUp = () => {
-    setIsSignUp(!isSignUp);
-  };
-  // Function to continue with google
-  const continueWithGoogle = async () => {
-    auth.useDeviceLanguage();
-    const res = await signInWithPopup(auth, googleProvider);
-    //create user on firestore
-    await setDoc(doc(db, "users", res.user.uid), {
-      uid: res.user.uid,
-      name: res.user.displayName,
-      email:res.user.email,
-      photoURL: res.user.photoURL,
-      friends: [],
-      groups: [],
-    });
-    navigate("/");
-  };
-  const styleClass = isSignUp ? "cont s--signup" : "cont";
+
+ 
 
   return (
     <div className={styleClass}>
