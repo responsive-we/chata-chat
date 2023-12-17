@@ -3,14 +3,14 @@ import {
   createBrowserRouter,
   RouterProvider
 } from "react-router-dom";
-import {Auth} from "./components";
+import {Auth, Home} from "./components";
 import {AuthContext} from "./context/AuthContext.jsx";
 const App= ()=> {
   const {currentUser}=useContext(AuthContext);
   const router = createBrowserRouter([
     {
       path: "/",
-      element: currentUser ? `hello` : <Auth/>,
+      element: currentUser ? <Home/> : <Auth/>,
     },
     {
       path: "/auth",

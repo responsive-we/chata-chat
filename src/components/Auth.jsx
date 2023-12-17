@@ -42,7 +42,6 @@ const Auth = () => {
   const signUpWithEmailAndPassword = async (
     auth,
     { email, password, name },
-    avatarUrl
   ) => {
     try {
       //creat a user
