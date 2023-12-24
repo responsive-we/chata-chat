@@ -6,6 +6,7 @@ export const AuthContext = createContext();
 export const AuthContextProvider = ({ children }) => {
   const [currentUser, setCurrentUser] = useState({});
   const [currentUserData, setCurrentUserData] = useState({});
+  const [activeFriend, setActiveFriend] = useState({});
   const [combinedId, setCombinedId] = useState("");
   useEffect(() => {
     const unsub = onAuthStateChanged(auth, async (user) => {
@@ -28,7 +29,7 @@ export const AuthContextProvider = ({ children }) => {
   }, []);
 console.log(currentUser);
   return (
-    <AuthContext.Provider value={{ currentUser,currentUserData,combinedId,setCombinedId }}>
+    <AuthContext.Provider value={{ currentUser,currentUserData,combinedId,setCombinedId,activeFriend,setActiveFriend }}>
       {children}
     </AuthContext.Provider>
   );

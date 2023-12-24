@@ -6,13 +6,14 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 import { AuthContext } from "@/context/AuthContext";
 import { ExclamationTriangleIcon } from "@radix-ui/react-icons"
-import { db, query, collection, where, getDocs, setDoc, doc } from "@/firebase";
+import {ref} from "firebase/database"
+import { db, query, collection, where, getDocs, setDoc, doc,set, chatDb } from "@/firebase";
 const AddFriend = () => {
   const [email, setEmail] = useState("");
   const [user, setUser] = useState(null);
   const [sameUser, setSameUser] = useState(false);
   const [err, setErr] = useState(false);
-  const { currentUser, setCombinedId } = useContext(AuthContext);
+  const { currentUser, setCombinedId,currentUserData } = useContext(AuthContext);
   const handleChange = (e) => {
     setEmail(e.target.value);
   };
@@ -39,15 +40,16 @@ const AddFriend = () => {
       currentUser.uid > user.uid
         ? `${currentUser.uid}+${user.uid}`
         : `${user.uid}+${currentUser.uid}`;
-    const friends = Array.isArray(currentUser.friends)
-      ? [...currentUser.friends, user.uid]
+    const friends = Array.isArray(currentUserData.friends)
+      ? [...currentUserData.friends, user.uid]
       : [user.uid];
     await setDoc(
       doc(db, "users", currentUser.uid),
       { friends },
       { merge: true }
     );
-    await setDoc(doc(db, "chats", combinedId), {});
+    // await setDoc(doc(db, "chats", combinedId), {});
+    await set(ref(chatDb, 'chats/' +combinedId),{});
     setCombinedId(combinedId);
     setEmail("");
     setUser(null);

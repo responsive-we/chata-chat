@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button"
 import {signOut,auth,query,getDocs,db,where,collection} from "@/firebase"
 
 const sidebar = () => {
-  const { currentUser,currentUserData } = useContext(AuthContext);
+  const {currentUserData } = useContext(AuthContext);
   const [friendsData, setFriendsData] = useState([]);
   useEffect(() => {
     if (currentUserData.friends){
@@ -32,7 +32,7 @@ const sidebar = () => {
         <div className="mr-2 w-10">
          <EditProfile />
         </div>
-        <h2 className="">{currentUser.displayName}</h2>
+        <h2 className="">{currentUserData.name}</h2>
         <Button size="icon" onClick={()=>signOut(auth)} type="button"><ExitIcon/></Button>
       </div>
       <hr className="mb-2" />

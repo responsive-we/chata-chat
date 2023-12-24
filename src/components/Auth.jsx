@@ -16,6 +16,7 @@ import {
   setDoc,
   db,
   storage,
+  getDoc
 } from "../firebase";
 import { useFormik } from "formik";
 import * as Yup from "yup";
@@ -91,7 +92,10 @@ const Auth = () => {
   const continueWithGoogle = async () => {
     auth.useDeviceLanguage();
     const res = await signInWithPopup(auth, googleProvider);
+    const userDocRef = doc(db, "users", res.user.uid);
+    const userDocSnap = await getDoc(userDocRef);
     //create user on firestore
+    if (!userDocSnap.exists()) {
     await setDoc(doc(db, "users", res.user.uid), {
       uid: res.user.uid,
       name: res.user.displayName,
@@ -100,6 +104,9 @@ const Auth = () => {
       friends: [],
       groups: [],
     });
+
+    navigate("/");
+  }
     navigate("/");
   };
 
