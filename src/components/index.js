@@ -5,4 +5,5 @@ import Chat from "./Chat";
 import AddFriend from "./AddFriend";
 import EditProfile from "./EditProfile";
 import Friend from "./Friend";
-export {Auth,Home,Sidebar,Chat,AddFriend,EditProfile,Friend};
+import CreateGroup from "./CreateGroup";
+export {Auth,Home,Sidebar,Chat,AddFriend,EditProfile,Friend,CreateGroup};

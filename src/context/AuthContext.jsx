@@ -5,6 +5,7 @@ export const AuthContext = createContext();
 
 export const AuthContextProvider = ({ children }) => {
   const [currentUser, setCurrentUser] = useState({});
+  const [friendsData, setFriendsData] = useState([]);
   const [currentUserData, setCurrentUserData] = useState({});
   const [activeFriend, setActiveFriend] = useState({});
   const [combinedId, setCombinedId] = useState("");
@@ -27,9 +28,8 @@ export const AuthContextProvider = ({ children }) => {
       unsub();
     };
   }, []);
-console.log(currentUser);
   return (
-    <AuthContext.Provider value={{ currentUser,currentUserData,combinedId,setCombinedId,activeFriend,setActiveFriend }}>
+    <AuthContext.Provider value={{ currentUser,currentUserData,combinedId,setCombinedId,activeFriend,setActiveFriend,setFriendsData,friendsData }}>
       {children}
     </AuthContext.Provider>
   );

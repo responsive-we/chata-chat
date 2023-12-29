@@ -1,13 +1,13 @@
 import React, { useContext, useEffect,useState } from "react";
 import { AuthContext } from "../context/AuthContext";
-import { AddFriend,EditProfile, Friend } from ".";
+import { AddFriend,CreateGroup,EditProfile, Friend } from ".";
 import { ExitIcon } from "@radix-ui/react-icons";
 import { Button } from "@/components/ui/button"
 import {signOut,auth,query,getDocs,db,where,collection} from "@/firebase"
 
 const sidebar = () => {
-  const {currentUserData } = useContext(AuthContext);
-  const [friendsData, setFriendsData] = useState([]);
+  const {currentUserData,setFriendsData } = useContext(AuthContext);
+  const [friendsData, setFriendData] = useState([]);
   useEffect(() => {
     if (currentUserData.friends){
       currentUserData.friends.forEach(async (friend)=>{
@@ -15,8 +15,8 @@ const sidebar = () => {
         try{
           const querySnapshot= await getDocs(q);
           querySnapshot.forEach((doc) => {
-            setFriendsData((prev)=>[...prev,doc.data()]);
-           
+            setFriendData((prev)=>[...prev,doc.data()]);
+           setFriendsData((prev)=>[...prev,doc.data()]);
           });
         }
         catch(error){
@@ -25,7 +25,6 @@ const sidebar = () => {
       })
     }
   }, [currentUserData,currentUserData.friends]);
- 
   return (
     <div className=" bg-slate-700 pr-2 pl-1 pt-1">
       <div className="flex justify-center items-center mb-2 ">
@@ -42,6 +41,7 @@ const sidebar = () => {
       {friendsData && friendsData.map((friend)=>(
         <Friend key={friend.uid} name={friend.name} photoURL={friend.photoURL} uid={friend.uid}/>
       ))}
+      <CreateGroup />
     </div>
   );
 };

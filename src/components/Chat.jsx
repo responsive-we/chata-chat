@@ -28,7 +28,6 @@ const Chat = () => {
     if (scrollAreaRef.current) {
       scrollAreaRef.current.scrollIntoView({ behavior: "smooth" })
   }},[message]);
-
   useEffect(() => {
     const getChats = async () => {
       if (!combinedId) return;
@@ -53,6 +52,8 @@ const Chat = () => {
     });
     setMessage("");
     setShowPicker(false);
+    if (scrollAreaRef.current) {
+      scrollAreaRef.current.scrollIntoView({ behavior: "smooth" })}
   };
   return (
     <div className="w-full">

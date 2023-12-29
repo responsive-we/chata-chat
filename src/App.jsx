@@ -11,10 +11,6 @@ const App= ()=> {
     {
       path: "/",
       element: currentUser ? <Home/> : <Auth/>,
-    },
-    {
-      path: "/auth",
-      element: <Auth/>,
     }
   ]);
   return (
