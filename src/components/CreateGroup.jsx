@@ -115,7 +115,7 @@ const CreateGroup = () => {
         <hr />
         Add Friends to your group
         {friendsData &&
-          friendsData.map((friend) => {
+          friendsData.map((friend,index) => {
             if(members.length === 0) return (
                <div className="flex justify-center items-center gap-5">
                   <Friend
@@ -172,7 +172,6 @@ const CreateGroup = () => {
           </Button>
         </DialogFooter>
       </DialogContent>
-      {console.log(members)}
     </Dialog>
   );
 };

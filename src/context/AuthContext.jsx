@@ -9,6 +9,7 @@ export const AuthContextProvider = ({ children }) => {
   const [currentUserData, setCurrentUserData] = useState({});
   const [activeFriend, setActiveFriend] = useState({});
   const [combinedId, setCombinedId] = useState("");
+  const [activeGroup, setActiveGroup] = useState({});
   useEffect(() => {
     const unsub = onAuthStateChanged(auth, async (user) => {
       setCurrentUser(user);
@@ -29,7 +30,7 @@ export const AuthContextProvider = ({ children }) => {
     };
   }, []);
   return (
-    <AuthContext.Provider value={{ currentUser,currentUserData,combinedId,setCombinedId,activeFriend,setActiveFriend,setFriendsData,friendsData }}>
+    <AuthContext.Provider value={{ currentUser,currentUserData,combinedId,setCombinedId,activeFriend,setActiveFriend,setFriendsData,friendsData,activeGroup,setActiveGroup }}>
       {children}
     </AuthContext.Provider>
   );

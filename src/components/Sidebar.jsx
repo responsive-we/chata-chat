@@ -1,13 +1,14 @@
 import React, { useContext, useEffect,useState } from "react";
 import { AuthContext } from "../context/AuthContext";
-import { AddFriend,CreateGroup,EditProfile, Friend } from ".";
+import { AddFriend,CreateGroup,EditProfile, Friend, Group } from ".";
 import { ExitIcon } from "@radix-ui/react-icons";
 import { Button } from "@/components/ui/button"
-import {signOut,auth,query,getDocs,db,where,collection} from "@/firebase"
+import {signOut,auth,query,getDocs,db,where,collection, getDoc,doc} from "@/firebase"
 
-const sidebar = () => {
+const Sidebar = () => {
   const {currentUserData,setFriendsData } = useContext(AuthContext);
   const [friendsData, setFriendData] = useState([]);
+  const [groupData, setGroupData] = useState([]);
   useEffect(() => {
     if (currentUserData.friends){
       currentUserData.friends.forEach(async (friend)=>{
@@ -24,7 +25,21 @@ const sidebar = () => {
         }
       })
     }
-  }, [currentUserData,currentUserData.friends]);
+    const fetchGroupData = async () => {
+      const newGroupData = [];
+      if (Array.isArray(currentUserData.groups)){
+      for (const group of currentUserData.groups) {
+        const docSnap = await getDoc(doc(db, "groups", group));
+        if (docSnap.exists()) {
+          newGroupData.push(docSnap.data());
+        }
+      }
+    }
+      setGroupData(newGroupData);
+    };
+  
+    fetchGroupData();
+  }, [currentUserData,currentUserData.friends,currentUserData.groups]);
   return (
     <div className=" bg-slate-700 pr-2 pl-1 pt-1">
       <div className="flex justify-center items-center mb-2 ">
@@ -41,9 +56,14 @@ const sidebar = () => {
       {friendsData && friendsData.map((friend)=>(
         <Friend key={friend.uid} name={friend.name} photoURL={friend.photoURL} uid={friend.uid}/>
       ))}
+      <hr/>
+      <h2 className="text-center text-white">Groups</h2>
+      {groupData.map((group) => (
+  <Group key={group.groupId} name={group.name} photoURL={group.displayPhoto} groupId={group.groupId}/>
+))}
       <CreateGroup />
     </div>
   );
 };
 
-export default sidebar;
+export default Sidebar;
