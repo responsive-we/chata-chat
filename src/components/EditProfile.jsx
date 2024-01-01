@@ -13,14 +13,13 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
- 
+
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+
 import {
-  Alert,
-  AlertDescription,
-  AlertTitle,
-} from "@/components/ui/alert"
- 
-import { PlusCircledIcon,ExclamationTriangleIcon } from "@radix-ui/react-icons";
+  PlusCircledIcon,
+  ExclamationTriangleIcon,
+} from "@radix-ui/react-icons";
 
 import {
   storage,
@@ -30,7 +29,8 @@ import {
   updateDoc,
   db,
   ref,
-  doc
+  doc,
+  updateProfile as updateUserProfile,
 } from "@/firebase";
 
 const EditProfile = () => {
@@ -39,6 +39,8 @@ const EditProfile = () => {
   const [avatar, setAvatar] = useState(null);
   const [name, setName] = useState(currentUser.displayName);
   const [err, setErr] = useState(false);
+  const [uploading, setUploading] = useState(false);
+  const [loading, setLoading] = useState(false);
   const handleNameChange = (e) => {
     setName(e.target.value);
   };
@@ -49,40 +51,81 @@ const EditProfile = () => {
 
   const updateProfile = async () => {
     const storageRef = ref(storage, currentUser.uid);
-    await storageRef.getDownloadURL().then(()=>{});
-    try {
-      await deleteObject(storageRef).then(async () => {
-        try{
-        await uploadBytesResumable(storageRef, avatar).then(() => {
-          getDownloadURL(storageRef).then(async (downloadUrl) => {
-            await updateProfile(currentUser, {
-              name,
-              photoURL: downloadUrl,
-            });
-            await updateDoc(doc(db, "users", currentUser.uid), {
-              name,
-              photoURL: downloadUrl,
-            });
-          });
-        })}catch(err){
-          setErr(true);
-        };
-      });
-    } catch (err) {
-        await uploadBytesResumable(storageRef, avatar).then(() => {
-          getDownloadURL(storageRef).then(async (downloadUrl) => {
-            await updateProfile(currentUser, {
-              name,
-              photoURL: downloadUrl,
-            });
-            await updateDoc(doc(db, "users", currentUser.uid), {
-              name,
-              photoURL: downloadUrl,
-            });
+    if (avatar) {
+      getDownloadURL(storageRef)
+        .then(async () => {
+          await deleteObject(storageRef).then(async () => {
+            const upload = uploadBytesResumable(storageRef, avatar);
+            upload.on(
+              "state_changed",
+              (snapshot) => {
+                setUploading(
+                  Math.round(
+                  (snapshot.bytesTransferred / snapshot.totalBytes) * 100
+                  )
+                );
+              },
+              (err) => {
+                console.log(err);
+              },
+              async () => {
+                getDownloadURL(upload.snapshot.ref).then(async (downloadUrl) => {
+                  await updateUserProfile(currentUser, {
+                    photoURL: downloadUrl,
+                    displayName:name?name:currentUser.displayName
+                  });
+                  await updateDoc(doc(db, "users", currentUser.uid), {
+                    photoURL: downloadUrl,
+                    name:name?name:currentUser.displayName
+                  });
+                  window.location.reload(false);
+                });
+                setAvatarUrl(null);
+                setAvatar(null);
+                setName(null);
+                return;
+              }
+            );
           });
         })
-        setErr(false);
-        return
+        .catch(async (err) => {
+          console.log(err);
+          const upload = await uploadBytesResumable(storageRef, avatar);
+          getDownloadURL(upload.ref).then(async (downloadUrl) => {
+            await updateUserProfile(currentUser, {
+              photoURL: downloadUrl,
+            });
+            await updateDoc(doc(db, "users", currentUser.uid), {
+              photoURL: downloadUrl,
+            });
+            setAvatarUrl(null);
+            setAvatar(null);
+            setName(null);
+            setLoading(false);
+            setUploading(false);
+            window.location.reload(false);
+            return;
+          });
+        });
+    }
+    if (!avatar && name) {
+      try {
+        setLoading(true);
+        await updateUserProfile(currentUser, {
+          displayName: name,
+        });
+        await updateDoc(doc(db, "users", currentUser.uid), {
+          name,
+        });
+        setAvatarUrl(null);
+        setAvatar(null);
+        setName(null);
+        setLoading(false);
+        window.location.reload(false);
+        return;
+      } catch (err) {
+        setErr(true);
+      }
     }
   };
   return (
@@ -108,6 +151,7 @@ const EditProfile = () => {
           onChange={handleNameChange}
           id="name"
           placeholder="Name."
+          value={name}
         />
         <div className="flex flex-row-reverse items-center justify-center ">
           <Input
@@ -131,17 +175,17 @@ const EditProfile = () => {
           </Label>
         </div>
         {err && (
-           <Alert variant="destructive">
-           <ExclamationTriangleIcon className="h-4 w-4" />
-           <AlertTitle>Error</AlertTitle>
-           <AlertDescription>
-            Oops, something went wrong. Please try again later.
-           </AlertDescription>
-         </Alert>
+          <Alert variant="destructive">
+            <ExclamationTriangleIcon className="h-4 w-4" />
+            <AlertTitle>Error</AlertTitle>
+            <AlertDescription>
+              Oops, something went wrong. Please try again later.
+            </AlertDescription>
+          </Alert>
         )}
         <DialogFooter>
-          <Button type="submit" className="w-full" onClick={updateProfile}>
-            Save changes
+          <Button type="submit" className="w-full" onClick={updateProfile} disabled={uploading===false?false:true}>
+           {uploading<=100&uploading!==false?`Uploading: ${uploading}%`:loading?"Loading...":"Save changes"}
           </Button>
         </DialogFooter>
       </DialogContent>
