@@ -1,5 +1,4 @@
 import React, { useContext, useState, useRef, useEffect } from "react";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { AuthContext } from "@/context/AuthContext";
@@ -7,6 +6,7 @@ import EmojiPicker from "emoji-picker-react";
 import emoji from "@/assets/emoji.png";
 import { ref } from "firebase/database";
 import { chatDb, update, get, child } from "@/firebase";
+import { EditGroup } from "@/components";
 const Incoming = ({ message }) => (
   <div className="w-fit z-0 bg-gray-700 rounded-xl mb-1 p-2 ml-4">
     <p>{message}</p>
@@ -19,7 +19,7 @@ const Outgoing = ({ message }) => (
 );
 
 const GroupChat = () => {
-    const {activeGroup} = useContext(AuthContext);
+    const {activeGroup,activeFriend} = useContext(AuthContext);
     const {currentUserData} = useContext(AuthContext);
     const [showPicker, setShowPicker] = useState(false);
     const [message, setMessage] = useState("");
@@ -44,7 +44,7 @@ const GroupChat = () => {
         }
       };
       getChats();
-    }, [message,activeGroup.groupId]);
+    }, [message,activeGroup.groupId,activeFriend]);
     const handleSend = async () => {
       const currentDate = Date.now();
       if (message.length === 0) return;
@@ -61,15 +61,7 @@ const GroupChat = () => {
       <div className="w-full">
         {activeGroup.groupId && (
           <>
-            <div className=" bg-slate-800 h-[9%]">
-              <div className="flex justify-center items-center">
-                <Avatar className="ml-2 mt-2">
-                  <AvatarImage src={activeGroup.displayPhoto} />
-                  <AvatarFallback>CN</AvatarFallback>
-                </Avatar>
-                <h2 className="">{activeGroup.name}</h2>
-              </div>
-            </div>
+            <EditGroup />
             <ScrollArea  className="flex min-h-[84%] max-h-[84%] flex-col gap-2">
               {chats.map((chat,index) => {
                 return (

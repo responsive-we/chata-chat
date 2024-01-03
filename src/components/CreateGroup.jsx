@@ -18,7 +18,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { PlusIcon, PlusCircledIcon } from "@radix-ui/react-icons";
 import {doc,setDoc,uploadBytesResumable,getDownloadURL,updateDoc,ref,storage,db} from "@/firebase";
 import { useNavigate } from "react-router-dom";
-import { arrayUnion } from "firebase/firestore";
+import { arrayUnion } from "@/firebase";
 
 const CreateGroup = () => {
   const navigate = useNavigate();
@@ -36,7 +36,7 @@ const CreateGroup = () => {
     setAvatar(e.target.files[0]);
   };
   const addToGroup = (uid) => {
-    setMembers((prev) => [...prev, { uid, role: "member" }]);
+    setMembers((prev) => [...prev, uid]);
   };
   const handleCreateGroup = async () => {
     const groupId=uuid();
@@ -49,7 +49,8 @@ const CreateGroup = () => {
             groupId,
             name,
             displayPhoto:downloadURL,
-            members: [...members, { uid: currentUserData.uid, role: "admin" }],
+            members: [...members],
+            admins:[currentUserData.uid]
           });
           members.forEach(async (member) => {
             await updateDoc(doc(db, "users", member.uid), {
@@ -103,7 +104,7 @@ const CreateGroup = () => {
             htmlFor="picture"
             className="mb-1 flex justify-center items-center flex-row-reverse"
           >
-            Update your profile picture
+           Pick a display photo
             <Avatar className="mt-1 mr-2 h-16 w-16">
               <AvatarImage src={avatarUrl} />
               <AvatarFallback>
@@ -115,11 +116,10 @@ const CreateGroup = () => {
         <hr />
         Add Friends to your group
         {friendsData &&
-          friendsData.map((friend,index) => {
+          friendsData.map((friend) => {
             if(members.length === 0) return (
-               <div className="flex justify-center items-center gap-5">
+               <div   key={friend.uid} className="flex justify-center items-center gap-5">
                   <Friend
-                    key={friend.uid}
                     name={friend.name}
                     photoURL={friend.photoURL}
                     uid={friend.uid}
@@ -128,23 +128,18 @@ const CreateGroup = () => {
                     height={24}
                     width={24}
                     className={`cursor-pointer ${
-                      members.forEach((member) =>
-                        member.uid.includes(friend.uid)
-                      )
-                        ? "hidden"
-                        : ""
+                    members && members.includes(friend.uid)?"hidden":""
                     }`}
                     onClick={() => addToGroup(friend.uid)}
                   />
                 </div>
             )
             if (
-              members.forEach((member) => member.uid.includes(friend.uid))
+              members && members.includes(friend.uid)
             ) {
               return (
-                <div className="flex justify-center items-center gap-5">
+                <div   key={friend.uid} className="flex justify-center items-center gap-5">
                   <Friend
-                    key={friend.uid}
                     name={friend.name}
                     photoURL={friend.photoURL}
                     uid={friend.uid}
@@ -153,11 +148,7 @@ const CreateGroup = () => {
                     height={24}
                     width={24}
                     className={`cursor-pointer ${
-                      members.forEach((member) =>
-                        member.uid.includes(friend.uid)
-                      )
-                        ? "hidden"
-                        : ""
+                      members && members.includes(friend.uid)?"hidden":""
                     }`}
                     onClick={() => addToGroup(friend.uid)}
                   />

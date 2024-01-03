@@ -8,4 +8,5 @@ import Friend from "./Friend";
 import CreateGroup from "./CreateGroup";
 import Group from "./Group";
 import GroupChat from "./GroupChat";
-export {Auth,Home,Sidebar,Chat,AddFriend,EditProfile,Friend,CreateGroup,Group,GroupChat};
+import EditGroup from "./EditGroup";
+export {Auth,Home,Sidebar,Chat,AddFriend,EditProfile,Friend,CreateGroup,Group,GroupChat,EditGroup};
