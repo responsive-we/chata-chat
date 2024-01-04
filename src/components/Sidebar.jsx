@@ -4,7 +4,6 @@ import { AddFriend,CreateGroup,EditProfile, Friend, Group } from ".";
 import { ExitIcon } from "@radix-ui/react-icons";
 import { Button } from "@/components/ui/button"
 import {signOut,auth,query,getDocs,db,where,collection, getDoc,doc} from "@/firebase"
-
 const Sidebar = () => {
   const {currentUserData,setFriendsData } = useContext(AuthContext);
   const [friendsData, setFriendData] = useState([]);
@@ -41,7 +40,7 @@ const Sidebar = () => {
     fetchGroupData();
   }, [currentUserData,currentUserData.friends,currentUserData.groups]);
   return (
-    <div className=" bg-slate-700 pr-2 pl-1 pt-1">
+    <div className=" bg-slate-700 pr-2 pl-1 pt-1 w-[25%]">
       <div className="flex justify-center items-center mb-2 ">
         <div className="mr-2 w-10">
          <EditProfile />

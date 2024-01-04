@@ -28,6 +28,7 @@ import {
   getDoc,
   arrayUnion,
   arrayRemove,
+  deleteDoc
 } from "firebase/firestore";
 import { getDatabase, set,update,get,child } from "firebase/database";
 const firebaseConfig = {
@@ -72,5 +73,5 @@ export {
   chatDb,
   set,
   update,
-  getDoc,get,child,arrayRemove,arrayUnion
+  getDoc,get,child,arrayRemove,arrayUnion,deleteDoc
 };

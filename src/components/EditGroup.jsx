@@ -34,7 +34,6 @@ import {
   getDoc,
   arrayUnion,
   arrayRemove,
-  set
 } from "@/firebase";
 import {Friend} from ".";
 

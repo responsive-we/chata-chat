@@ -127,9 +127,7 @@ const CreateGroup = () => {
                   <PlusCircledIcon
                     height={24}
                     width={24}
-                    className={`cursor-pointer ${
-                    members && members.includes(friend.uid)?"hidden":""
-                    }`}
+                    className={`cursor-pointer`}
                     onClick={() => addToGroup(friend.uid)}
                   />
                 </div>
@@ -147,9 +145,7 @@ const CreateGroup = () => {
                   <PlusCircledIcon
                     height={24}
                     width={24}
-                    className={`cursor-pointer ${
-                      members && members.includes(friend.uid)?"hidden":""
-                    }`}
+                    className={`cursor-pointer`}
                     onClick={() => addToGroup(friend.uid)}
                   />
                 </div>

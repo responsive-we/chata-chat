@@ -108,7 +108,7 @@ const Friend = ({ name, photoURL, uid }) => {
       {alertType && alertType === "deleteChats" && (
         <ShowAlertDialog
         actionText="Delete"
-        descriptionText="This will delete all the chats witho you from the selected friend. This action can not be undone."
+        descriptionText="This will delete all the chats with you from the selected friend. This action can not be undone."
         open={open}
         setOpen={setOpen}
         alertType={alertType}
@@ -135,16 +135,6 @@ const Friend = ({ name, photoURL, uid }) => {
       </ContextMenuTrigger>
       <ContextMenuContent>
         <ContextMenuItem
-          className="bg-destructive"
-          onClick={() => {
-            setAlertType("removeFriend");
-            setOpen(true);
-          }}
-        >
-          Remove Friend <MinusCircledIcon className="ml-2" />
-        </ContextMenuItem>
-        <ContextMenuSeparator />
-        <ContextMenuItem
           className="bg-slate"
           onClick={() => {
             setAlertType("deleteChats");
@@ -152,6 +142,16 @@ const Friend = ({ name, photoURL, uid }) => {
           }}
         >
           Delete chats <TrashIcon className="ml-2" />
+        </ContextMenuItem>
+          <ContextMenuSeparator />
+        <ContextMenuItem
+          className="bg-destructive"
+          onClick={() => {
+            setAlertType("removeFriend");
+            setOpen(true);
+          }}
+        >
+          Remove Friend <MinusCircledIcon className="ml-2" />
         </ContextMenuItem>
       </ContextMenuContent>
     </ContextMenu>
