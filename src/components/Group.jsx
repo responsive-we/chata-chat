@@ -29,7 +29,6 @@ import { Button } from "@/components/ui/button";
 import { ExitIcon, TrashIcon } from "@radix-ui/react-icons";
 import {ref as databaseRef,remove} from "firebase/database"
 //TODO: Make functionality to delete group like in Friend.jsx
-// * 
 const ShowAlert=({setShowAlert})=>(
   <Alert className=" w-[100%]">
       <ExclamationTriangleIcon className="h-4 w-4" />

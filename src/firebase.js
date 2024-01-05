@@ -8,6 +8,7 @@ import {
   updateProfile,
   onAuthStateChanged,
   signOut,
+  deleteUser,
 } from "firebase/auth";
 import {
   ref,
@@ -73,5 +74,5 @@ export {
   chatDb,
   set,
   update,
-  getDoc,get,child,arrayRemove,arrayUnion,deleteDoc
+  getDoc,get,child,arrayRemove,arrayUnion,deleteDoc,deleteUser
 };
