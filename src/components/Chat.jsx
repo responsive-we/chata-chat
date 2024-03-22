@@ -6,15 +6,17 @@ import { AuthContext } from "@/context/AuthContext";
 import EmojiPicker from "emoji-picker-react";
 import emoji from "@/assets/emoji.png";
 import { ref } from "firebase/database";
-import { chatDb, update, get, child } from "@/firebase";
-const Incoming = ({ message }) => (
+import { chatDb, update, get, child} from "@/firebase";
+const Incoming = ({ message, dateTime }) => (
   <div className="w-fit z-0 bg-gray-700 rounded-xl mb-1 p-2 ml-4">
     <p>{message}</p>
+    <div className="text-xs text-right">{dateTime}</div>
   </div>
 );
-const Outgoing = ({ message }) => (
-  <div className="w-fit z-0 bg-gray-500 m-4 rounded-xl mb-1 p-2">
+const Outgoing = ({ message, dateTime }) => (
+  <div className="w-fit z-0 h-fit bg-gray-500 m-4 min-w-[10em] rounded-xl mb-1 p-2">
     <p>{message}</p>
+    <div className="text-xs text-right">{dateTime}</div>
   </div>
 );
 const Chat = () => {
@@ -22,12 +24,14 @@ const Chat = () => {
   const [showPicker, setShowPicker] = useState(false);
   const [message, setMessage] = useState("");
   const [chats, setChats] = useState([]);
-
+  let currentDate = null;
   const scrollAreaRef = useRef(null);
+  
   useEffect(() => {
     if (scrollAreaRef.current) {
-      scrollAreaRef.current.scrollIntoView({ behavior: "smooth" })
-  }},[message]);
+      scrollAreaRef.current.scrollIntoView({ behavior: "smooth" });
+    }
+  }, [message]);
   useEffect(() => {
     const getChats = async () => {
       if (!combinedId) return;
@@ -42,18 +46,23 @@ const Chat = () => {
       }
     };
     getChats();
-  });
+    if (scrollAreaRef.current) {
+      scrollAreaRef.current.scrollIntoView({ behavior: "smooth" });
+    }
+  },[combinedId,message]);
   const handleSend = async () => {
     const currentDate = Date.now();
     if (message.length === 0) return;
     await update(ref(chatDb, "chats/" + combinedId + "/" + currentDate), {
       message,
       sentBy: currentUserData.uid,
+      dateTime: currentDate,
     });
     setMessage("");
     setShowPicker(false);
     if (scrollAreaRef.current) {
-      scrollAreaRef.current.scrollIntoView({ behavior: "smooth" })}
+      scrollAreaRef.current.scrollIntoView({ behavior: "smooth" });
+    }
   };
   return (
     <div className="w-full">
@@ -73,14 +82,36 @@ const Chat = () => {
               <h2 className="">{activeFriend.name}</h2>
             </div>
           </div>
-          <ScrollArea  className="flex min-h-[84%] max-h-[84%] flex-col gap-2">
-            {chats.map((chat,index) => {
+            
+          <ScrollArea className="flex min-h-[84%] max-h-[84%] flex-col gap-2">
+            {
+            chats.map((chat, index) => {
+              const dateTime = new Date(chat.dateTime).toLocaleString("en-us", {
+                hour: "numeric",
+                minute: "numeric",
+                hour12: true,
+              });
+              const dateString = new Date(chat.dateTime).toLocaleDateString(
+                "en-US"
+              );
+              const isNewDate = dateString != currentDate;
+              currentDate = dateString;
+              
               return (
                 <div ref={scrollAreaRef}>
+                  {isNewDate && <div className=" mt-1 bg-green-700 w-fit p-1 rounded-lg relative left-[50%] right-[50%]">{dateString}</div>}
                   {chat.sentBy === currentUserData.uid ? (
-                    <Outgoing key={index} message={chat.message} />
+                    <Outgoing
+                      key={index}
+                      message={chat.message}
+                      dateTime={dateTime}
+                    />
                   ) : (
-                    <Incoming key={index} message={chat.message} />
+                    <Incoming
+                      key={index}
+                      message={chat.message}
+                      dateTime={dateTime}
+                    />
                   )}
                 </div>
               );
@@ -91,7 +122,7 @@ const Chat = () => {
                 onEmojiClick={(sel__emoji) =>
                   setMessage((prev) => prev + sel__emoji.emoji)
                 }
-                className=" self-end z-30"
+                className=" self-end z-100"
               />
             )}
           </ScrollArea>
@@ -109,7 +140,7 @@ const Chat = () => {
                 type="text"
                 placeholder="Type your message here"
                 onKeyDown={(e) => {
-                  if (e.key === 'Enter' && message.length > 0) {
+                  if (e.key === "Enter" && message.length > 0) {
                     handleSend();
                     e.preventDefault(); // Prevents the addition of a new line in the input when pressing Enter
                   }
@@ -118,7 +149,6 @@ const Chat = () => {
               <Button
                 className="w-1/12 h-10"
                 disabled={message.length > 0 ? false : true}
-                
                 onClick={handleSend}
               >
                 Send
