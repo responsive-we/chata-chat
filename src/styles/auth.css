@@ -31,11 +31,6 @@ button {
   width: 900px;
   height: 550px;
   margin: 0 auto 100px;
-  background: #ffff;
-  box-shadow: -10px -10px 15px rgba(255, 255, 255, 0.3),
-    10px 10px 15px rgba(70, 70, 70, 0.15),
-    inset -10px -10px 15px rgba(255, 255, 255, 0.3),
-    inset 10px 10px 15px rgba(70, 70, 70, 0.15);
 }
 
 .form {
@@ -57,16 +52,10 @@ button {
   width: 900px;
   height: 100%;
   padding-left: 260px;
-  background: #fff;
   -webkit-transition: -webkit-transform 1.2s ease-in-out;
   transition: -webkit-transform 1.2s ease-in-out;
   transition: transform 1.2s ease-in-out;
   transition: transform 1.2s ease-in-out, -webkit-transform 1.2s ease-in-out;
-}
-
-.cont.s--signup .sub-cont {
-  -webkit-transform: translate3d(-640px, 0, 0);
-  transform: translate3d(-640px, 0, 0);
 }
 
 button {
@@ -274,8 +263,6 @@ hr {
   margin: 5px;
 }
 .submit {
-  margin-top: 22px;
-  margin-bottom: -26px;
   background: #fc4778;
   text-transform: uppercase;
 }
