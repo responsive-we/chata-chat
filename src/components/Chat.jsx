@@ -31,7 +31,7 @@ const Chat = () => {
     if (scrollAreaRef.current) {
       scrollAreaRef.current.scrollIntoView({ behavior: "smooth" });
     }
-  }, [message]);
+  }, [chats]);
   useEffect(() => {
     const getChats = async () => {
       if (!combinedId) return;
@@ -46,9 +46,6 @@ const Chat = () => {
       }
     };
     getChats();
-    if (scrollAreaRef.current) {
-      scrollAreaRef.current.scrollIntoView({ behavior: "smooth" });
-    }
   },[combinedId,message]);
   const handleSend = async () => {
     const currentDate = Date.now();

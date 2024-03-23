@@ -91,6 +91,7 @@ const CreateGroup = () => {
           onChange={handleChange}
           id="name"
           placeholder="Name."
+          required
         />
         <div className="flex flex-row-reverse items-center justify-center ">
           <Input
@@ -99,6 +100,7 @@ const CreateGroup = () => {
             accept="image/*"
             type="file"
             style={{ display: "none" }}
+            required
           />
           <Label
             htmlFor="picture"
@@ -133,7 +135,7 @@ const CreateGroup = () => {
                 </div>
             )
             if (
-              members && members.includes(friend.uid)
+              members && !members.includes(friend.uid)
             ) {
               return (
                 <div   key={friend.uid} className="flex justify-center items-center gap-5">
@@ -154,7 +156,7 @@ const CreateGroup = () => {
           })}
         No. of members: {members.length}
         <DialogFooter>
-          <Button type="submit" className="w-full" onClick={handleCreateGroup}>
+          <Button type="submit" className="w-full" disabled={members.length && avatar && name?false:true} onClick={handleCreateGroup}>
             Save changes
           </Button>
         </DialogFooter>

@@ -3,17 +3,29 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { MagnifyingGlassIcon, PlusCircledIcon } from "@radix-ui/react-icons";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { AuthContext } from "@/context/AuthContext";
-import { ExclamationTriangleIcon } from "@radix-ui/react-icons"
-import {ref} from "firebase/database"
-import { db, query, collection, where, getDocs, setDoc, doc,set, chatDb } from "@/firebase";
+import { ExclamationTriangleIcon } from "@radix-ui/react-icons";
+import { ref } from "firebase/database";
+import {
+  db,
+  query,
+  collection,
+  where,
+  getDocs,
+  setDoc,
+  doc,
+  set,
+  chatDb,
+} from "@/firebase";
 const AddFriend = () => {
   const [email, setEmail] = useState("");
   const [user, setUser] = useState(null);
   const [sameUser, setSameUser] = useState(false);
   const [err, setErr] = useState(false);
-  const { currentUser, setCombinedId,currentUserData } = useContext(AuthContext);
+  const [friendExist, setFriendExist] = useState(false);
+  const { currentUser, setCombinedId, currentUserData } =
+    useContext(AuthContext);
   const handleChange = (e) => {
     setEmail(e.target.value);
   };
@@ -36,6 +48,11 @@ const AddFriend = () => {
       setSameUser(true);
       return;
     }
+    if (currentUserData.friends.includes(user.uid)) {
+      setFriendExist(true);
+      setEmail("");
+      return;
+    }
     const combinedId =
       currentUser.uid > user.uid
         ? `${currentUser.uid}+${user.uid}`
@@ -48,11 +65,11 @@ const AddFriend = () => {
       { friends },
       { merge: true }
     );
-    // await setDoc(doc(db, "chats", combinedId), {});
-    await set(ref(chatDb, 'chats/' +combinedId),{});
+    await set(ref(chatDb, "chats/" + combinedId), {});
     setCombinedId(combinedId);
     setEmail("");
     setUser(null);
+    window.location.reload(false);
   };
   return (
     <div className="w-full max-w-sm  ">
@@ -74,18 +91,47 @@ const AddFriend = () => {
       </div>
       {sameUser && (
         <Alert variant="destructive" className="mt-4">
-        <ExclamationTriangleIcon className="h-4 w-4" />
-        <AlertTitle>Friend can not be added</AlertTitle>
-        <AlertDescription>
-          You can not add yourself as a friend.
-        </AlertDescription>
-      </Alert>
-      
+          <ExclamationTriangleIcon className="h-4 w-4" />
+          <AlertTitle>Friend can not be added</AlertTitle>
+          <AlertDescription>
+            You can not add yourself as a friend.
+          </AlertDescription>
+          <Button
+            onClick={() => {
+              setSameUser(false);
+              setEmail("");
+              setUser(null);
+            }}
+          >
+            Ok
+          </Button>
+        </Alert>
       )}
-      
-      {user && !sameUser && (
+      {friendExist && (
+        <Alert variant="destructive" className="mt-4">
+          <ExclamationTriangleIcon className="h-4 w-4" />
+          <AlertTitle className="text-white">Friend can not be added</AlertTitle>
+          <AlertDescription className="text-white"  >
+            Friend already exist in your friend list.
+          </AlertDescription>
+          <Button
+            onClick={() => {
+              setFriendExist(false);
+              setEmail("");
+              setUser(null);
+            }}
+          >
+            Ok
+          </Button>
+        </Alert>
+      )}
+
+      {user && !sameUser && !friendExist && (
         <div className="bg-slate mt-2 pr-2 pl-1 pt-1">
-          <div className="flex justify-center items-center mb-2" disabled={true}>
+          <div
+            className="flex justify-center items-center mb-2"
+            disabled={true}
+          >
             <div className="mr-2 w-10">
               <Avatar>
                 <AvatarImage src={user.photoURL} />
@@ -93,7 +139,7 @@ const AddFriend = () => {
               </Avatar>
             </div>
             <h2 className="">{user.name}</h2>
-         <PlusCircledIcon
+            <PlusCircledIcon
               height={24}
               width={24}
               className=" cursor-pointer"
