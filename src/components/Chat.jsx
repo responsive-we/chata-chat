@@ -6,7 +6,7 @@ import { AuthContext } from "@/context/AuthContext";
 import EmojiPicker from "emoji-picker-react";
 import emoji from "@/assets/emoji.png";
 import { ref } from "firebase/database";
-import { chatDb, update, get, child} from "@/firebase";
+import { chatDb, update, get, child,onValue,chatRef} from "@/firebase";
 const Incoming = ({ message, dateTime }) => (
   <div className="w-fit z-0 bg-gray-700 rounded-xl mb-1 p-2 ml-4">
     <p>{message}</p>
@@ -32,21 +32,36 @@ const Chat = () => {
       scrollAreaRef.current.scrollIntoView({ behavior: "smooth" });
     }
   }, [chats]);
+  // useEffect(() => {
+  //   const getChats = async () => {
+  //     if (!combinedId) return;
+  //     const chatRef = ref(chatDb);
+  //     const chatSnap = await get(child(chatRef, `chats/${combinedId}`));
+  //     try {
+  //       if (chatSnap.exists()) {
+  //         setChats(Object.values(chatSnap.val()));
+  //       }
+  //     } catch (err) {
+  //       console.log(err);
+  //     }
+  //   };
+  //   getChats();
+  // },[combinedId,message]);
   useEffect(() => {
-    const getChats = async () => {
-      if (!combinedId) return;
-      const chatRef = ref(chatDb);
-      const chatSnap = await get(child(chatRef, `chats/${combinedId}`));
-      try {
-        if (chatSnap.exists()) {
-          setChats(Object.values(chatSnap.val()));
-        }
-      } catch (err) {
-        console.log(err);
+    const chatRef = ref(chatDb, `chats/${combinedId}`);
+    const unsubscribe = onValue(chatRef, (snapshot) => {
+      const chat = snapshot.val();
+      if (!!chat) {
+        console.log(Object.values(chat))
+        setChats(Object.values(chat))
+      } else {
+        console.log("No chat found");
       }
-    };
-    getChats();
-  },[combinedId,message]);
+    });
+  
+    return () => unsubscribe();
+  }, []);
+
   const handleSend = async () => {
     const currentDate = Date.now();
     if (message.length === 0) return;

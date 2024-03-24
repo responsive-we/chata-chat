@@ -31,7 +31,7 @@ import {
   arrayRemove,
   deleteDoc
 } from "firebase/firestore";
-import { getDatabase, set,update,get,child } from "firebase/database";
+import { getDatabase, set,update,get,child,onValue,ref as chatRef } from "firebase/database";
 const firebaseConfig = {
   apiKey: import.meta.env.VITE_API_KEY,
   authDomain: import.meta.env.VITE_AUTH_DOMAIN,
@@ -74,5 +74,5 @@ export {
   chatDb,
   set,
   update,
-  getDoc,get,child,arrayRemove,arrayUnion,deleteDoc,deleteUser
+  getDoc,get,child,arrayRemove,arrayUnion,deleteDoc,deleteUser,onValue,chatRef
 };
