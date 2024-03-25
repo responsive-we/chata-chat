@@ -52,7 +52,7 @@ const Chat = () => {
     const unsubscribe = onValue(chatRef, (snapshot) => {
       const chat = snapshot.val();
       if (!!chat) {
-        console.log(Object.values(chat))
+        console.log(chat)
         setChats(Object.values(chat))
       } else {
         console.log("No chat found");
@@ -60,7 +60,7 @@ const Chat = () => {
     });
   
     return () => unsubscribe();
-  }, []);
+  }, [combinedId]);
 
   const handleSend = async () => {
     const currentDate = Date.now();
