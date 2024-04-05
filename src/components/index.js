@@ -9,4 +9,6 @@ import CreateGroup from "./CreateGroup";
 import Group from "./Group";
 import GroupChat from "./GroupChat";
 import EditGroup from "./EditGroup";
-export {Auth,Home,Sidebar,Chat,AddFriend,EditProfile,Friend,CreateGroup,Group,GroupChat,EditGroup};
+import SignInForm from "./SignInForm";
+import SignUpForm from "./SignUpForm";
+export {Auth,Home,Sidebar,Chat,AddFriend,EditProfile,Friend,CreateGroup,Group,GroupChat,EditGroup,SignInForm,SignUpForm};

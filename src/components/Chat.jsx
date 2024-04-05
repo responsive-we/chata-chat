@@ -32,21 +32,6 @@ const Chat = () => {
       scrollAreaRef.current.scrollIntoView({ behavior: "smooth" });
     }
   }, [chats]);
-  // useEffect(() => {
-  //   const getChats = async () => {
-  //     if (!combinedId) return;
-  //     const chatRef = ref(chatDb);
-  //     const chatSnap = await get(child(chatRef, `chats/${combinedId}`));
-  //     try {
-  //       if (chatSnap.exists()) {
-  //         setChats(Object.values(chatSnap.val()));
-  //       }
-  //     } catch (err) {
-  //       console.log(err);
-  //     }
-  //   };
-  //   getChats();
-  // },[combinedId,message]);
   useEffect(() => {
     const chatRef = ref(chatDb, `chats/${combinedId}`);
     const unsubscribe = onValue(chatRef, (snapshot) => {
@@ -96,8 +81,7 @@ const Chat = () => {
           </div>
             
           <ScrollArea className="flex min-h-[84%] max-h-[84%] flex-col gap-2">
-            {
-            chats.map((chat, index) => {
+            {chats.length === 0 ? chats.map((chat, index) => {
               const dateTime = new Date(chat.dateTime).toLocaleString("en-us", {
                 hour: "numeric",
                 minute: "numeric",
@@ -127,7 +111,7 @@ const Chat = () => {
                   )}
                 </div>
               );
-            })}
+            }):<div className="w-full h-[80vh] flex justify-center items-center"> No chats yet</div>}
             {showPicker && (
               <EmojiPicker
                 autoFocusSearch={true}

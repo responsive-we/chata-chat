@@ -251,9 +251,9 @@ const EditGroup = () => {
           </DialogTrigger>
           <DialogContent className="sm:max-w-[425px]">
             <DialogHeader>
-              <DialogTitle>Edit profile</DialogTitle>
+              <DialogTitle>Edit group</DialogTitle>
               <DialogDescription>
-                Make changes to your profile here. Click save when you're done.
+                Make changes to your group here. Click save when you're done.
               </DialogDescription>
             </DialogHeader>
             <Label htmlFor="name" className="mb-1">
