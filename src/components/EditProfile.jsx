@@ -290,7 +290,7 @@ const EditProfile = () => {
           <Button type="submit" className="w-full" onClick={updateProfile} disabled={uploading===false?false:true}>
            {uploading<=100&uploading!==false?`Uploading: ${uploading}%`:loading?"Loading...":"Save changes"}
           </Button>
-          <Button type="submit" className="w-full bg-destructive" onClick={()=> {setAlertType("deleteProfile")
+          <Button type="submit" className="w-full bg-slate-600 text-white" onClick={()=> {setAlertType("deleteProfile")
           setOpen(true)                     
         }} disabled={loading}>
             <TrashIcon/>Delete profile

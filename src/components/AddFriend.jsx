@@ -72,26 +72,28 @@ const AddFriend = () => {
     window.location.reload(false);
   };
   return (
-    <div className="w-full max-w-sm  ">
-      <div className="flex space-x-2 items-center">
+    <div className="w-full">
+      <div className="flex">
         <Input
           type=" email"
           onChange={handleChange}
           value={email}
           placeholder="Email"
+          className=" w-11/12"
         />
         <Button
           onSubmit={handleSearch}
           size="icon"
           onClick={handleSearch}
           type="submit"
+          className="w-1/12"
         >
           <MagnifyingGlassIcon />
         </Button>
       </div>
       {sameUser && (
-        <Alert variant="destructive" className="mt-4">
-          <ExclamationTriangleIcon className="h-4 w-4" />
+        <Alert className="mt-4 bg-transparent">
+          <ExclamationTriangleIcon color="red" className="h-4 w-4" />
           <AlertTitle>Friend can not be added</AlertTitle>
           <AlertDescription>
             You can not add yourself as a friend.
@@ -108,8 +110,8 @@ const AddFriend = () => {
         </Alert>
       )}
       {friendExist && (
-        <Alert variant="destructive" className="mt-4">
-          <ExclamationTriangleIcon className="h-4 w-4" />
+        <Alert className="mt-4 bg-transparent">
+          <ExclamationTriangleIcon color="red" className="h-4 w-4" />
           <AlertTitle className="text-white">Friend can not be added</AlertTitle>
           <AlertDescription className="text-white"  >
             Friend already exist in your friend list.

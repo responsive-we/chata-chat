@@ -62,7 +62,7 @@ const Chat = () => {
     }
   };
   return (
-    <div className="w-full">
+    <div className="w-full flex flex-col justify-center">
       {!combinedId && (
         <div className="w-full h-[100%] flex justify-center items-center">
           <h1 className="text-3xl">Select a friend to chat</h1>
@@ -70,17 +70,17 @@ const Chat = () => {
       )}
       {combinedId && (
         <>
-          <div className=" bg-slate-800 h-[9%]">
-            <div className="flex justify-center items-center">
-              <Avatar className="ml-2 mt-2">
+          <div className=" bg-slate-800 h-[7vh] flex justify-center items-center">
+            {/* <div className="flex justify-center items-center"> */}
+              <Avatar className="ml-2">
                 <AvatarImage src={activeFriend.photoURL} />
                 <AvatarFallback>CN</AvatarFallback>
               </Avatar>
               <h2 className="">{activeFriend.name}</h2>
-            </div>
+            {/* </div> */}
           </div>
             
-          <ScrollArea className="flex min-h-[84%] max-h-[84%] flex-col gap-2">
+          <ScrollArea className="flex h-[90vh] flex-col gap-2">
             {chats.length === 0 ? chats.map((chat, index) => {
               const dateTime = new Date(chat.dateTime).toLocaleString("en-us", {
                 hour: "numeric",
@@ -111,7 +111,7 @@ const Chat = () => {
                   )}
                 </div>
               );
-            }):<div className="w-full h-[80vh] flex justify-center items-center"> No chats yet</div>}
+            }):<div className="w-full h-[90vh] flex justify-center items-center"> No chats yet</div>}
             {showPicker && (
               <EmojiPicker
                 autoFocusSearch={true}
@@ -122,7 +122,7 @@ const Chat = () => {
               />
             )}
           </ScrollArea>
-          <div className=" h-[7%] ">
+          <div className=" h-[4vh] ">
             <div className="flex justify-center items-center">
               <img
                 src={emoji}
@@ -131,7 +131,7 @@ const Chat = () => {
               />
               <input
                 value={message}
-                className="w-11/12 h-10  border-2 border-slate-800 pl-4"
+                className="w-11/12  border-2 border-slate-800 pl-4"
                 onChange={(e) => setMessage(e.target.value)}
                 type="text"
                 placeholder="Type your message here"

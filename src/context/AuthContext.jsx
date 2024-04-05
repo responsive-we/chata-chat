@@ -10,6 +10,7 @@ export const AuthContextProvider = ({ children }) => {
   const [activeFriend, setActiveFriend] = useState({});
   const [combinedId, setCombinedId] = useState("");
   const [activeGroup, setActiveGroup] = useState({});
+  const [windowWidth, setWindowWidth] = useState(window.innerWidth);
   useEffect(() => {
     const unsub = onAuthStateChanged(auth, async (user) => {
       setCurrentUser(user);
@@ -29,8 +30,15 @@ export const AuthContextProvider = ({ children }) => {
       unsub();
     };
   }, []);
+
+  useEffect(() => {
+    const handleResize = () => setWindowWidth(window.innerWidth);
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+  const isSmallScreen = windowWidth < 550;
   return (
-    <AuthContext.Provider value={{ currentUser,currentUserData,combinedId,setCombinedId,activeFriend,setActiveFriend,setFriendsData,friendsData,activeGroup,setActiveGroup }}>
+    <AuthContext.Provider value={{ currentUser,currentUserData,combinedId,setCombinedId,activeFriend,setActiveFriend,setFriendsData,friendsData,activeGroup,setActiveGroup,isSmallScreen }}>
       {children}
     </AuthContext.Provider>
   );

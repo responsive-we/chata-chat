@@ -3,12 +3,13 @@ import { Sidebar,Chat,GroupChat } from '.'
 import '../styles/index.css'
 import { AuthContext } from '../context/AuthContext'
 const Home = () => {
-  const {activeGroup} = useContext(AuthContext);
+  const {activeGroup,isSmallScreen,combinedId} = useContext(AuthContext);
   const isActiveGroupEmpty = Object.keys(activeGroup).length === 0;
+  
   return (
     <div className='flex h-screen '>
     <Sidebar/>
-    {!isActiveGroupEmpty?<GroupChat/>:<Chat/>}
+    {isSmallScreen?combinedId?<Chat/>:!isActiveGroupEmpty?<GroupChat/>:null:!isActiveGroupEmpty && !isSmallScreen?<GroupChat/>:<Chat/>}
     </div>
   )
 }

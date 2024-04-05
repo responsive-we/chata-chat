@@ -72,7 +72,7 @@ const CreateGroup = () => {
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button>
+        <Button className="w-full">
           <PlusIcon />
         </Button>
       </DialogTrigger>
