@@ -58,6 +58,7 @@ const Auth = () => {
         groups: [],
       });
       navigate("/");
+      window.location.reload();
     } catch (error) {
       console.error(error);
       setErr(true);
@@ -91,8 +92,10 @@ const Auth = () => {
       });
 
       navigate("/");
+      window.location.reload();
     }
     navigate("/");
+    window.location.reload();
   };
 
   // Function to handle avatar

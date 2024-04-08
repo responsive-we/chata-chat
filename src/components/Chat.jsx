@@ -6,6 +6,7 @@ import { AuthContext } from "@/context/AuthContext";
 import EmojiPicker from "emoji-picker-react";
 import emoji from "@/assets/emoji.png";
 import { ref } from "firebase/database";
+import {ChevronLeftIcon} from "@radix-ui/react-icons";
 import { chatDb, update, get, child,onValue,chatRef} from "@/firebase";
 const Incoming = ({ message, dateTime }) => (
   <div className="w-fit z-0 bg-gray-700 rounded-xl mb-1 p-2 ml-4">
@@ -20,7 +21,7 @@ const Outgoing = ({ message, dateTime }) => (
   </div>
 );
 const Chat = () => {
-  const { combinedId, activeFriend, currentUserData } = useContext(AuthContext);
+  const { combinedId, activeFriend, currentUserData,setCombinedId } = useContext(AuthContext);
   const [showPicker, setShowPicker] = useState(false);
   const [message, setMessage] = useState("");
   const [chats, setChats] = useState([]);
@@ -70,18 +71,17 @@ const Chat = () => {
       )}
       {combinedId && (
         <>
-          <div className=" bg-slate-800 h-[7vh] flex justify-center items-center">
-            {/* <div className="flex justify-center items-center"> */}
+          <div className=" bg-slate-800 p-2 flex justify-center items-center">
+            <ChevronLeftIcon className="w-8 h-8 text-white cursor-pointer" onClick={() => setCombinedId(null)} />  
               <Avatar className="ml-2">
                 <AvatarImage src={activeFriend.photoURL} />
                 <AvatarFallback>CN</AvatarFallback>
               </Avatar>
               <h2 className="">{activeFriend.name}</h2>
-            {/* </div> */}
           </div>
             
-          <ScrollArea className="flex h-[90vh] flex-col gap-2">
-            {chats.length === 0 ? chats.map((chat, index) => {
+          <ScrollArea className="flex h-screen flex-col gap-2">
+            {!chats.length == 0 ? chats.map((chat, index) => {
               const dateTime = new Date(chat.dateTime).toLocaleString("en-us", {
                 hour: "numeric",
                 minute: "numeric",
@@ -111,7 +111,7 @@ const Chat = () => {
                   )}
                 </div>
               );
-            }):<div className="w-full h-[90vh] flex justify-center items-center"> No chats yet</div>}
+            }):<div className="w-full h-screen flex justify-center items-center"> No chats yet</div>}
             {showPicker && (
               <EmojiPicker
                 autoFocusSearch={true}
@@ -122,7 +122,7 @@ const Chat = () => {
               />
             )}
           </ScrollArea>
-          <div className=" h-[4vh] ">
+          <div>
             <div className="flex justify-center items-center">
               <img
                 src={emoji}

@@ -20,6 +20,7 @@ import {
   PlusCircledIcon,
   ExclamationTriangleIcon,
   MinusCircledIcon,
+  ChevronLeftIcon
 } from "@radix-ui/react-icons";
 
 import {
@@ -226,27 +227,25 @@ const EditGroup = () => {
   return (
     <>
       {!isAdmin && (
-        <div className=" bg-slate-800 h-[9%]">
-          <div className="flex justify-center items-center">
+        <div className=" bg-slate-800 p-2 flex justify-center items-center">
+          <ChevronLeftIcon className="w-8 h-8 text-white cursor-pointer" onClick={() => setActiveGroup({})} />  
             <Avatar className="ml-2 mt-2">
               <AvatarImage src={activeGroup.displayPhoto} />
               <AvatarFallback>CN</AvatarFallback>
             </Avatar>
             <h2 className="">{activeGroup.name}</h2>
-          </div>
         </div>
       )}
       {isAdmin && (
         <Dialog>
           <DialogTrigger asChild>
-            <div className=" bg-slate-800 h-[9%]">
-              <div className="flex justify-center items-center">
+          <div className=" bg-slate-800 p-2 flex justify-center items-center">
+          <ChevronLeftIcon className="w-8 h-8 text-white cursor-pointer" onClick={() => setActiveGroup({})} />  
                 <Avatar className="ml-2 mt-2">
                   <AvatarImage src={activeGroup.displayPhoto} />
                   <AvatarFallback>CN</AvatarFallback>
                 </Avatar>
                 <h2 className="">{activeGroup.name}</h2>
-              </div>
             </div>
           </DialogTrigger>
           <DialogContent className="sm:max-w-[425px]">

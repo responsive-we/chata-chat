@@ -65,6 +65,11 @@ const AddFriend = () => {
       { friends },
       { merge: true }
     );
+    await setDoc(doc(db, "users", user.uid), {
+      friends: Array.isArray(user.friends)
+        ? [...user.friends, currentUser.uid]
+        : [currentUser.uid],
+    }, { merge: true });
     await set(ref(chatDb, "chats/" + combinedId), {});
     setCombinedId(combinedId);
     setEmail("");
